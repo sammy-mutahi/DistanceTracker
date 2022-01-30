@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -50,6 +51,7 @@ dependencies {
 
     //room
     implementation("androidx.room:room-runtime:2.4.1")
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt("androidx.room:room-compiler:2.4.1")
     implementation("androidx.room:room-ktx:2.4.1")
 
