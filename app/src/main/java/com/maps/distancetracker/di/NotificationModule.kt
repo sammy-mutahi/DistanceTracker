@@ -8,7 +8,6 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.maps.distancetracker.MainActivity
 import com.maps.distancetracker.R
-import com.maps.distancetracker.utils.Constants.NAVIGATE_TO_MAPS
 import com.maps.distancetracker.utils.Constants.NOTIFICATION_CHANNEL_ID
 import com.maps.distancetracker.utils.Constants.PENDING_INTENT_REQUEST_CODE
 import dagger.Module
@@ -31,11 +30,7 @@ object NotificationModule {
         return PendingIntent.getActivity(
             context,
             PENDING_INTENT_REQUEST_CODE,
-            Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                action = NAVIGATE_TO_MAPS
-                context.startActivity(this)
-            },
+            Intent(context, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
