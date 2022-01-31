@@ -11,6 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.maps.distancetracker.databinding.FragmentMapsBinding
+import com.maps.distancetracker.utils.MapStyle
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
 import com.vmadalin.easypermissions.EasyPermissions
@@ -20,6 +21,10 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private val binding: FragmentMapsBinding by lazy {
         FragmentMapsBinding.inflate(layoutInflater)
+    }
+
+    private val mapStyle: MapStyle by lazy {
+        MapStyle()
     }
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -35,6 +40,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val sydney = LatLng(-34.0, 151.0)
         googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        mapStyle.setMapStyle(googleMap, requireContext())
     }
 
     override fun onCreateView(
