@@ -30,7 +30,10 @@ object NotificationModule {
         return PendingIntent.getActivity(
             context,
             PENDING_INTENT_REQUEST_CODE,
-            Intent(context, MainActivity::class.java),
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(this)
+            },
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
