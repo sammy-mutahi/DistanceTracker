@@ -10,8 +10,17 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.maps.distancetracker.databinding.FragmentMapsBinding
+import com.maps.distancetracker.utils.Permissions.hasLocationPermission
+import com.maps.distancetracker.utils.Permissions.requestLocationPermission
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+
+    private val binding: FragmentMapsBinding by lazy {
+        FragmentMapsBinding.inflate(layoutInflater)
+    }
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -33,12 +42,37 @@ class MapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+        //check for location permissions
+        if (!hasLocationPermission(requireContext())) {
+            requestLocationPermission(this)
+        }
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            SettingsDialog.Builder(requireActivity()).build().show()
+        } else {
+            requestLocationPermission(this)
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        return
     }
 }
