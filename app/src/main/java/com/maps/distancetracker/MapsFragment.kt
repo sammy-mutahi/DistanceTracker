@@ -6,41 +6,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.maps.distancetracker.databinding.FragmentMapsBinding
+import com.maps.distancetracker.utils.CameraAndViewPort
+import com.maps.distancetracker.utils.Constants.PERMISSION_BACKGROUND_REQUEST_CODE
+import com.maps.distancetracker.utils.Constants.PERMISSION_LOCATION_REQUEST_CODE
 import com.maps.distancetracker.utils.MapStyle
+import com.maps.distancetracker.utils.Permissions.hasBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
+import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 
-class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReadyCallback {
 
     private val binding: FragmentMapsBinding by lazy {
         FragmentMapsBinding.inflate(layoutInflater)
     }
 
+    private val cameraAndViewPort by lazy { CameraAndViewPort() }
+
+    private lateinit var map: GoogleMap
+
+    private val nairobi = LatLng(-1.286389, 36.817223)
+
     private val mapStyle: MapStyle by lazy {
         MapStyle()
-    }
-
-    private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        mapStyle.setMapStyle(googleMap, requireContext())
     }
 
     override fun onCreateView(
@@ -58,7 +54,22 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        mapFragment?.getMapAsync(this)
+        initListeners()
+    }
+
+    private fun initListeners() {
+        binding.startButton.setOnClickListener {
+            onStartButtonClicked()
+        }
+    }
+
+    private fun onStartButtonClicked() {
+        if (hasBackgroundPermission(requireContext())) {
+
+        } else {
+            requestBackgroundPermission(this)
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -67,7 +78,25 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+        when (requestCode) {
+            PERMISSION_LOCATION_REQUEST_CODE -> {
+                EasyPermissions.onRequestPermissionsResult(
+                    requestCode,
+                    permissions,
+                    grantResults,
+                    this
+                )
+            }
+            PERMISSION_BACKGROUND_REQUEST_CODE -> {
+                EasyPermissions.onRequestPermissionsResult(
+                    requestCode,
+                    permissions,
+                    grantResults,
+                    this
+                )
+            }
+        }
+
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
@@ -79,6 +108,31 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        return
+        when (requestCode) {
+            PERMISSION_LOCATION_REQUEST_CODE -> {
+                //do nothing for now
+            }
+            PERMISSION_BACKGROUND_REQUEST_CODE -> {
+                onStartButtonClicked()
+            }
+        }
     }
+
+    override fun onMapReady(p0: GoogleMap) {
+        map = p0
+        map.addMarker(
+            MarkerOptions().position(nairobi).title("Marker in Nairobi")
+        )
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewPort.nairobi))
+        map.uiSettings.apply {
+            isZoomControlsEnabled = false
+            isZoomGesturesEnabled = false
+            isRotateGesturesEnabled = false
+            isTiltGesturesEnabled = false
+            isCompassEnabled = false
+            isScrollGesturesEnabled = false
+        }
+        mapStyle.setMapStyle(map, requireContext())
+    }
+
 }
