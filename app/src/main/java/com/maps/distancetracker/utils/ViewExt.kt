@@ -12,4 +12,12 @@ object ViewExt {
     fun View.hide() {
         visibility = INVISIBLE
     }
+
+    fun View.disable() {
+        isEnabled = false
+    }
+
+    fun View.enable() {
+        isEnabled = true
+    }
 }

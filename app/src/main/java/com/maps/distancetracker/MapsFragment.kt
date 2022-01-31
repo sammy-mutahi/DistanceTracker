@@ -1,9 +1,11 @@
 package com.maps.distancetracker
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,6 +22,9 @@ import com.maps.distancetracker.utils.Permissions.hasBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
+import com.maps.distancetracker.utils.ViewExt.disable
+import com.maps.distancetracker.utils.ViewExt.hide
+import com.maps.distancetracker.utils.ViewExt.show
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 
@@ -67,13 +72,54 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     private fun onStartButtonClicked() {
         if (hasBackgroundPermission(requireContext())) {
             startCountDown()
+            binding.apply {
+                startButton.hide()
+                stopButton.show()
+            }
         } else {
             requestBackgroundPermission(this)
         }
     }
 
     private fun startCountDown() {
+        binding.apply {
+            counterTextview.show()
+            stopButton.disable()
+        }
 
+        val timer: CountDownTimer = object : CountDownTimer(4000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val currentSecond = millisUntilFinished / 1000
+                if (currentSecond.toString() == "0") {
+                    binding.apply {
+                        counterTextview.text = "GO"
+                        counterTextview.setTextColor(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.black
+                            )
+                        )
+                    }
+                } else {
+                    binding.apply {
+                        counterTextview.text = "$currentSecond"
+                        counterTextview.setTextColor(
+                            ContextCompat.getColor(
+                                binding.root.context,
+                                R.color.red
+                            )
+                        )
+                    }
+                }
+            }
+
+            override fun onFinish() {
+                binding.counterTextview.hide()
+            }
+
+
+        }
+        timer.start()
     }
 
     override fun onRequestPermissionsResult(
