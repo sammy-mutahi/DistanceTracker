@@ -1,5 +1,6 @@
 package com.maps.distancetracker
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -14,7 +15,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.maps.distancetracker.databinding.FragmentMapsBinding
+import com.maps.distancetracker.service.TrackerService
 import com.maps.distancetracker.utils.CameraAndViewPort
+import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
 import com.maps.distancetracker.utils.Constants.PERMISSION_BACKGROUND_REQUEST_CODE
 import com.maps.distancetracker.utils.Constants.PERMISSION_LOCATION_REQUEST_CODE
 import com.maps.distancetracker.utils.MapStyle
@@ -114,6 +117,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
             }
 
             override fun onFinish() {
+                sendActionCommandToService(ACTION_SERVICE_START)
                 binding.counterTextview.hide()
             }
 
@@ -183,6 +187,13 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
             isScrollGesturesEnabled = false
         }
         mapStyle.setMapStyle(map, requireContext())
+    }
+
+    private fun sendActionCommandToService(action: String) {
+        Intent(requireContext(), TrackerService::class.java).apply {
+            this.action = action
+            requireContext().startService(this)
+        }
     }
 
 }
