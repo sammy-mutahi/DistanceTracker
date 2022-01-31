@@ -30,7 +30,9 @@ import com.maps.distancetracker.utils.ViewExt.hide
 import com.maps.distancetracker.utils.ViewExt.show
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReadyCallback {
 
     private val binding: FragmentMapsBinding by lazy {
@@ -51,7 +53,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         //check for location permissions
         if (!hasLocationPermission(requireContext())) {
             requestLocationPermission(this)

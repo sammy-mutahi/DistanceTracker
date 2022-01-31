@@ -5,7 +5,9 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_STOP
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TrackerService : LifecycleService() {
 
     companion object {
