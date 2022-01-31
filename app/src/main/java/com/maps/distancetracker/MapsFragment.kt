@@ -194,7 +194,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     private fun sendActionCommandToService(action: String) {
         Intent(requireContext(), TrackerService::class.java).apply {
             this.action = action
-            requireContext().startService(this)
+            binding.root.context.startService(this)
         }
     }
 

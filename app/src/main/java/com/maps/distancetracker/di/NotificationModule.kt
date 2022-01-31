@@ -32,6 +32,7 @@ object NotificationModule {
             context,
             PENDING_INTENT_REQUEST_CODE,
             Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 action = NAVIGATE_TO_MAPS
                 context.startActivity(this)
             },
