@@ -66,10 +66,14 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
 
     private fun onStartButtonClicked() {
         if (hasBackgroundPermission(requireContext())) {
-
+            startCountDown()
         } else {
             requestBackgroundPermission(this)
         }
+    }
+
+    private fun startCountDown() {
+
     }
 
     override fun onRequestPermissionsResult(
