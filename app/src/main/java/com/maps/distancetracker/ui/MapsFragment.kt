@@ -8,15 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
+import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.maps.distancetracker.R
 import com.maps.distancetracker.databinding.FragmentMapsBinding
 import com.maps.distancetracker.service.TrackerService
@@ -29,6 +25,10 @@ import com.maps.distancetracker.utils.Permissions.hasBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
+import com.maps.distancetracker.utils.ViewExt.disable
+import com.maps.distancetracker.utils.ViewExt.hide
+import com.maps.distancetracker.utils.ViewExt.show
+import com.maps.distancetracker.utils.moveCameraWithAnim
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,24 +39,16 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     private val binding: FragmentMapsBinding by lazy {
         FragmentMapsBinding.inflate(layoutInflater)
     }
+    private val viewModel: MapsViewModel by viewModels()
 
     private val cameraAndViewPort by lazy { CameraAndViewPort() }
 
     private lateinit var map: GoogleMap
 
-    private val nairobi = LatLng(-1.286389, 36.817223)
-
     private val mapStyle: MapStyle by lazy {
         MapStyle()
     }
 
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireContext())
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,17 +67,26 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
         initListeners()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.currentLocation.observe(viewLifecycleOwner) { location ->
+            if (::map.isInitialized) {
+                map.moveCameraWithAnim(LatLng(location.latitude, location.longitude))
+                setUpMarkers()
+            }
+        }
+    }
+
+    private fun setUpMarkers() {
+        //markers will go here
+
     }
 
     private fun initListeners() {
         binding.startButton.setOnClickListener {
             onStartButtonClicked()
-        }
-    }
-
-    private fun startLocationUpdates() {
-        val locationRequest = LocationRequest().apply {
-
         }
     }
 
@@ -191,10 +192,6 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
 
     override fun onMapReady(p0: GoogleMap) {
         map = p0
-        map.addMarker(
-            MarkerOptions().position(nairobi).title("Marker in Nairobi")
-        )
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewPort.nairobi))
         map.uiSettings.apply {
             isZoomControlsEnabled = false
             isZoomGesturesEnabled = false
@@ -204,6 +201,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
             isScrollGesturesEnabled = false
         }
         mapStyle.setMapStyle(map, requireContext())
+        viewModel.fetchLocationUpdates()
     }
 
     private fun sendActionCommandToService(action: String) {
