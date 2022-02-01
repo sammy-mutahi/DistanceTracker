@@ -15,7 +15,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".MapsFragment" />
+        tools:context=".ui.MapsFragment" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/start_button"

@@ -6,7 +6,7 @@
     app:startDestination="@id/mapsFragment">
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.maps.distancetracker.MapsFragment"
+        android:name="com.maps.distancetracker.ui.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.maps.distancetracker.ResultFragment"
+        android:name="com.maps.distancetracker.ui.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result">
         <action

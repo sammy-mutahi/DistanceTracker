@@ -1,4 +1,4 @@
-package com.maps.distancetracker
+package com.maps.distancetracker.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,12 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.maps.distancetracker.R
 import com.maps.distancetracker.databinding.FragmentMapsBinding
 import com.maps.distancetracker.service.TrackerService
 import com.maps.distancetracker.utils.CameraAndViewPort
@@ -25,9 +29,6 @@ import com.maps.distancetracker.utils.Permissions.hasBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
-import com.maps.distancetracker.utils.ViewExt.disable
-import com.maps.distancetracker.utils.ViewExt.hide
-import com.maps.distancetracker.utils.ViewExt.show
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +48,14 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
 
     private val mapStyle: MapStyle by lazy {
         MapStyle()
+    }
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
     override fun onCreateView(
@@ -71,6 +80,12 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     private fun initListeners() {
         binding.startButton.setOnClickListener {
             onStartButtonClicked()
+        }
+    }
+
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest().apply {
+
         }
     }
 

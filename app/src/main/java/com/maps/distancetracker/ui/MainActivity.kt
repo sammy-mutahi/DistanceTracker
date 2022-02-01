@@ -1,9 +1,10 @@
-package com.maps.distancetracker
+package com.maps.distancetracker.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.maps.distancetracker.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

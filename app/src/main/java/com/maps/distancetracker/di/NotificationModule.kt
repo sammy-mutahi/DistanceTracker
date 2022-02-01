@@ -6,8 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.maps.distancetracker.MainActivity
 import com.maps.distancetracker.R
+import com.maps.distancetracker.ui.MainActivity
 import com.maps.distancetracker.utils.Constants.NOTIFICATION_CHANNEL_ID
 import com.maps.distancetracker.utils.Constants.PENDING_INTENT_REQUEST_CODE
 import dagger.Module
