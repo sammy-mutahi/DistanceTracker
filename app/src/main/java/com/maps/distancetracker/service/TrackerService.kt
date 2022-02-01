@@ -3,13 +3,23 @@ package com.maps.distancetracker.service
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
+import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.os.Build
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_STOP
+import com.maps.distancetracker.utils.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
+import com.maps.distancetracker.utils.Constants.LOCATION_UPDATE_INTERVAL
 import com.maps.distancetracker.utils.Constants.NOTIFICATION_CHANNEL_ID
 import com.maps.distancetracker.utils.Constants.NOTIFICATION_CHANNEL_NAME
 import com.maps.distancetracker.utils.Constants.NOTIFICATION_ID
@@ -25,13 +35,18 @@ class TrackerService : LifecycleService() {
     @Inject
     lateinit var notificationManager: NotificationManager
 
+    @Inject
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
 
     companion object {
         val started = MutableLiveData<Boolean>()
+        val locations = MutableLiveData<MutableList<LatLng>>()
     }
 
     private fun setInitialValues() {
         started.postValue(false)
+        locations.postValue(mutableListOf())
     }
 
     override fun onCreate() {
@@ -45,9 +60,11 @@ class TrackerService : LifecycleService() {
                 ACTION_SERVICE_START -> {
                     started.postValue(true)
                     startForegroundService()
+                    startLocationUpdates()
                 }
                 ACTION_SERVICE_STOP -> {
                     started.postValue(false)
+                    stopForegroundService()
                 }
                 else -> {
                     //do nothing
@@ -55,6 +72,19 @@ class TrackerService : LifecycleService() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun stopForegroundService() {
+        removeLocationUpdates()
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(
+            NOTIFICATION_ID
+        )
+        stopForeground(true)
+        stopSelf()
+    }
+
+    private fun removeLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
     private fun startForegroundService() {
@@ -70,6 +100,38 @@ class TrackerService : LifecycleService() {
                 IMPORTANCE_LOW
             )
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun updateLocationList(location: Location) {
+        val newLatLng = LatLng(location.latitude, location.longitude)
+        locations.value?.apply {
+            add(newLatLng)
+            locations.postValue(this)
+        }
+    }
+
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest.create().apply {
+            interval = LOCATION_UPDATE_INTERVAL
+            fastestInterval = LOCATION_FASTEST_UPDATE_INTERVAL
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+    }
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult) {
+            super.onLocationResult(result)
+            result.locations.let { locations ->
+                for (location in locations) {
+                    updateLocationList(location)
+                }
+            }
         }
     }
 }

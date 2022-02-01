@@ -1,6 +1,7 @@
 package com.maps.distancetracker.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -9,15 +10,19 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.ButtCap
+import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import com.maps.distancetracker.R
 import com.maps.distancetracker.databinding.FragmentMapsBinding
 import com.maps.distancetracker.service.TrackerService
-import com.maps.distancetracker.utils.CameraAndViewPort
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
+import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_STOP
 import com.maps.distancetracker.utils.Constants.PERMISSION_BACKGROUND_REQUEST_CODE
 import com.maps.distancetracker.utils.Constants.PERMISSION_LOCATION_REQUEST_CODE
 import com.maps.distancetracker.utils.MapStyle
@@ -26,6 +31,7 @@ import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
 import com.maps.distancetracker.utils.ViewExt.disable
+import com.maps.distancetracker.utils.ViewExt.enable
 import com.maps.distancetracker.utils.ViewExt.hide
 import com.maps.distancetracker.utils.ViewExt.show
 import com.maps.distancetracker.utils.moveCameraWithAnim
@@ -41,9 +47,11 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     }
     private val viewModel: MapsViewModel by viewModels()
 
-    private val cameraAndViewPort by lazy { CameraAndViewPort() }
+    private val moveCameraPosition by lazy { MapUtils() }
 
     private lateinit var map: GoogleMap
+
+    private var locationList: MutableList<LatLng> = mutableListOf()
 
     private val mapStyle: MapStyle by lazy {
         MapStyle()
@@ -85,12 +93,25 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     }
 
     private fun initListeners() {
-        binding.startButton.setOnClickListener {
-            onStartButtonClicked()
+        binding.apply {
+            startButton.setOnClickListener {
+                startService()
+                startButton.hide()
+            }
+            stopButton.setOnClickListener {
+                stopService()
+                stopButton.hide()
+                startButton.show()
+            }
         }
     }
 
-    private fun onStartButtonClicked() {
+    private fun stopService() {
+        sendActionCommandToService(ACTION_SERVICE_STOP)
+        binding.startButton.disable()
+    }
+
+    private fun startService() {
         if (hasBackgroundPermission(requireContext())) {
             startCountDown()
             binding.apply {
@@ -185,7 +206,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
                 //do nothing for now
             }
             PERMISSION_BACKGROUND_REQUEST_CODE -> {
-                onStartButtonClicked()
+                startService()
             }
         }
     }
@@ -202,6 +223,47 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         }
         mapStyle.setMapStyle(map, requireContext())
         viewModel.fetchLocationUpdates()
+        observeTrackerService()
+    }
+
+    private fun observeTrackerService() {
+        TrackerService.locations.observe(viewLifecycleOwner) {
+            if (it != null) {
+                locationList = it
+                drawPolyline()
+                followPolyline()
+                if (locationList.size > 1) {
+                    binding.stopButton.enable()
+                }
+            }
+        }
+    }
+
+    private fun drawPolyline() {
+        val polyline = map.addPolyline(
+            PolylineOptions().apply {
+                width(10f)
+                color(Color.BLUE)
+                jointType(JointType.ROUND)
+                startCap(ButtCap())
+                endCap(ButtCap())
+                addAll(locationList)
+            }
+        )
+    }
+
+    private fun followPolyline() {
+        if (locationList.isNotEmpty()) {
+            map.animateCamera(
+                (
+                        CameraUpdateFactory.newCameraPosition(
+                            moveCameraPosition.moveCameraPosition(
+                                locationList.last()
+                            )
+                        )
+                        ), 1000, null
+            )
+        }
     }
 
     private fun sendActionCommandToService(action: String) {

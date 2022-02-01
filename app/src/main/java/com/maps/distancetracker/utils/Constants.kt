@@ -13,5 +13,7 @@ object Constants {
     const val NOTIFICATION_CHANNEL_NAME = "tracker_notification_name"
     const val NOTIFICATION_ID = 3
     const val PENDING_INTENT_REQUEST_CODE = 99
-    const val NAVIGATE_TO_MAPS = "com.maps.distancetracker.NAVIAGATE_TO_MAPS"
+
+    const val LOCATION_UPDATE_INTERVAL = 4000L
+    const val LOCATION_FASTEST_UPDATE_INTERVAL = 2000L
 }
