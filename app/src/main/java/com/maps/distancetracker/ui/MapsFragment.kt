@@ -51,6 +51,9 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
 
     private lateinit var map: GoogleMap
 
+    private var startTime: Long = 0L
+    private var stopTime: Long = 0L
+
     private var locationList: MutableList<LatLng> = mutableListOf()
 
     private val mapStyle: MapStyle by lazy {
@@ -236,6 +239,12 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
                     binding.stopButton.enable()
                 }
             }
+        }
+        TrackerService.startTime.observe(viewLifecycleOwner) {
+            startTime = it
+        }
+        TrackerService.stopTime.observe(viewLifecycleOwner) {
+            stopTime = it
         }
     }
 
