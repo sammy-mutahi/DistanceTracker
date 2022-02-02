@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -48,6 +49,8 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
 
     private lateinit var map: GoogleMap
 
+    val started = MutableLiveData<Boolean>(false)
+
     private var startTime: Long = 0L
     private var stopTime: Long = 0L
 
@@ -66,6 +69,11 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         //check for location permissions
         if (!hasLocationPermission(requireContext())) {
             requestLocationPermission(this)
+        }
+        binding.apply {
+            lifecycleOwner = this@MapsFragment
+            tracking = this@MapsFragment
+
         }
         return binding.root
     }
@@ -239,6 +247,9 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         }
         TrackerService.startTime.observe(viewLifecycleOwner) {
             startTime = it
+        }
+        TrackerService.started.observe(viewLifecycleOwner) {
+            started.postValue(it)
         }
         TrackerService.stopTime.observe(viewLifecycleOwner) {
             stopTime = it
