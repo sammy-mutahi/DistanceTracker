@@ -20,23 +20,19 @@ class LocationUpdateUtils @Inject constructor(
             fastestInterval = FASTEST_UPDATE_INTERVAL
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
-
-        val locationCallback = object : LocationCallback() {
+        val callBack = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                val lastLocation = locationResult.lastLocation
-                trySend(lastLocation)
+                val location = locationResult.lastLocation
+                trySend(location)
             }
         }
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
-            locationCallback,
+            callBack,
             Looper.getMainLooper()
         )
-
-        awaitClose {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        }
+        awaitClose { fusedLocationProviderClient.removeLocationUpdates(callBack) }
     }
 
     companion object {

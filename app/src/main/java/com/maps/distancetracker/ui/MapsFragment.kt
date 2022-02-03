@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,6 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     }
     private val viewModel: MapsViewModel by viewModels()
 
-    private val moveCameraPosition by lazy { MapUtils() }
 
     private lateinit var map: GoogleMap
 
@@ -55,6 +55,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
     private var stopTime: Long = 0L
 
     private var locationList: MutableList<LatLng> = mutableListOf()
+    private val markerList = mutableListOf<Marker>()
 
     private val mapStyle: MapStyle by lazy {
         MapStyle()
@@ -73,7 +74,6 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         binding.apply {
             lifecycleOwner = this@MapsFragment
             tracking = this@MapsFragment
-
         }
         return binding.root
     }
@@ -83,21 +83,15 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
         initListeners()
-        observeViewModel()
     }
 
     private fun observeViewModel() {
         viewModel.currentLocation.observe(viewLifecycleOwner) { location ->
             if (::map.isInitialized) {
                 map.moveCameraWithAnim(LatLng(location.latitude, location.longitude))
-                setUpMarkers()
+                addMarker(LatLng(location.latitude, location.longitude))
             }
         }
-    }
-
-    private fun setUpMarkers() {
-        //markers will go here
-
     }
 
     private fun initListeners() {
@@ -116,7 +110,6 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
 
     private fun stopService() {
         sendActionCommandToService(ACTION_SERVICE_STOP)
-        binding.startButton.disable()
     }
 
     private fun startService() {
@@ -232,10 +225,19 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
         mapStyle.setMapStyle(map, requireContext())
         viewModel.fetchLocationUpdates()
         observeTrackerService()
+        if (startTime == 0L) {
+            observeViewModel()
+        }
+    }
+
+    private fun addMarker(position: LatLng) {
+        val marker = map.addMarker(MarkerOptions().position(position))
+        markerList.add(marker!!)
     }
 
     private fun observeTrackerService() {
         TrackerService.locations.observe(viewLifecycleOwner) {
+            Log.e("MapsFragment", "Last Location: $it")
             if (it != null) {
                 locationList = it
                 drawPolyline()
@@ -269,6 +271,8 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
                 bounds.build(), 100
             ), 2000, null
         )
+        addMarker(locationList.first())
+        addMarker(locationList.last())
     }
 
     private fun drawPolyline() {
@@ -289,7 +293,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
             map.animateCamera(
                 (
                         CameraUpdateFactory.newCameraPosition(
-                            moveCameraPosition.moveCameraPosition(
+                            MapUtils.moveCameraPosition(
                                 locationList.last()
                             )
                         )

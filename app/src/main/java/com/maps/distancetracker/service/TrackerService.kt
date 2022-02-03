@@ -16,6 +16,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
+import com.maps.distancetracker.ui.MapUtils
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_STOP
 import com.maps.distancetracker.utils.Constants.LOCATION_FASTEST_UPDATE_INTERVAL
@@ -116,6 +117,14 @@ class TrackerService : LifecycleService() {
         }
     }
 
+    private fun updateNotificationPeriodically() {
+        notification.apply {
+            setContentTitle("Distance Travelled")
+            setContentText(locations.value?.let { MapUtils.calculateDistance(locationList = it) })
+        }
+        notificationManager.notify(NOTIFICATION_ID, notification.build())
+    }
+
     private fun startLocationUpdates() {
         val locationRequest = LocationRequest.create().apply {
             interval = LOCATION_UPDATE_INTERVAL
@@ -136,6 +145,7 @@ class TrackerService : LifecycleService() {
             result.locations.let { locations ->
                 for (location in locations) {
                     updateLocationList(location)
+                    updateNotificationPeriodically()
                 }
             }
         }
