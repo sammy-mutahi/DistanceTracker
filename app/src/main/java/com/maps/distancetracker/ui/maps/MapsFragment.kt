@@ -9,15 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.maps.distancetracker.R
+import com.maps.distancetracker.data.Result
 import com.maps.distancetracker.databinding.FragmentMapsBinding
 import com.maps.distancetracker.service.TrackerService
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
@@ -29,6 +32,10 @@ import com.maps.distancetracker.utils.Permissions.hasBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
+import com.maps.distancetracker.utils.ViewExt.disable
+import com.maps.distancetracker.utils.ViewExt.enable
+import com.maps.distancetracker.utils.ViewExt.hide
+import com.maps.distancetracker.utils.ViewExt.show
 import com.maps.distancetracker.utils.moveCameraWithAnim
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
@@ -253,8 +260,20 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, OnMapReady
             stopTime = it
             if (stopTime != 0L) {
                 showBiggerPicture()
+                displayResult()
             }
         }
+    }
+
+    private fun displayResult() {
+        val result = Result(
+            MapUtils.calculateDistance(locationList),
+            MapUtils.calculateElapsedTime(startTime, stopTime)
+        )
+        findNavController().navigate(
+            R.id.action_mapsFragment_to_resultFragment,
+            bundleOf("result" to result)
+        )
     }
 
     private fun showBiggerPicture() {
