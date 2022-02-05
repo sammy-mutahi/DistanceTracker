@@ -21,6 +21,13 @@ object Versions {
     val lifecycleExtensions = "2.2.0"
     val easyPermissions = "1.0.0"
 
+    const val ktlint = "10.2.0"
+    const val detekt = "1.18.0"
+    const val spotless = "6.0.0"
+    const val dokka = "1.5.31"
+    const val gradleVersionsPlugin = "0.39.0"
+    const val jacoco = "0.8.7"
+
 
     //test
     val junit = "4.13.2"
