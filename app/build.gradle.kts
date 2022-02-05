@@ -3,18 +3,17 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("kotlin-kapt")
-    id("kotlin-android.extensions")
     id("dagger.hilt.android.plugin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
-    compileSdk(AppConfig.compileSdk)
+    compileSdkVersion(AppConfig.compileSdk)
 
     defaultConfig {
         applicationId = "com.maps.distancetracker"
-        minSdk(AppConfig.minSdk)
-        targetSdk(AppConfig.targetSdk)
+        minSdkVersion(AppConfig.minSdk)
+        targetSdkVersion(AppConfig.targetSdk)
         versionCode = AppConfig.versionCode
         versionName = AppConfig.versionName
 
@@ -22,26 +21,23 @@ android {
     }
 
     buildTypes {
-        getName("release") {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile('proguard-android-optimize.txt'),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
-        getByName("debug") {
-            isMinifyEnabled = false
-        }
     }
-    flavorDimensions(AppConfig.dimension)
+    flavorDimensions.add(AppConfig.dimension)
     productFlavors {
         create("staging") {
             applicationIdSuffix = ".staging"
-            setDimension(AppConfig.dimension)
+            dimension = AppConfig.dimension
         }
 
         create("production") {
-            setDimension(AppConfig.dimension)
+            dimension = AppConfig.dimension
         }
     }
     packagingOptions {
