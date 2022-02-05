@@ -16,7 +16,7 @@ the lint commands on the terminal :rocket:
 * Technologies used
     * [Kotlin](https://kotlinlang.org/)
     * [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)
-    * [MAPS]
+    * [MAPS]()
 
 * Gradle
     * [Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) - For reference
