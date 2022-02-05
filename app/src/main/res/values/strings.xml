@@ -6,4 +6,6 @@
     <string name="start">start</string>
     <string name="restart">restart</string>
     <string name="stop">stop</string>
+    <string name="time_taken">Time Taken</string>
+    <string name="distance">Distance</string>
 </resources>
