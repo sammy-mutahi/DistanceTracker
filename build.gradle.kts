@@ -4,6 +4,7 @@ buildscript {
 
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.38.1")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.18.1")
     }
 }
 plugins {
