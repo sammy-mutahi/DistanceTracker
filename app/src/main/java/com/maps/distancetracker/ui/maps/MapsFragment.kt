@@ -1,4 +1,4 @@
-package com.maps.distancetracker.ui
+package com.maps.distancetracker.ui.maps
 
 import android.content.Intent
 import android.graphics.Color
@@ -29,10 +29,6 @@ import com.maps.distancetracker.utils.Permissions.hasBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.hasLocationPermission
 import com.maps.distancetracker.utils.Permissions.requestBackgroundPermission
 import com.maps.distancetracker.utils.Permissions.requestLocationPermission
-import com.maps.distancetracker.utils.ViewExt.disable
-import com.maps.distancetracker.utils.ViewExt.enable
-import com.maps.distancetracker.utils.ViewExt.hide
-import com.maps.distancetracker.utils.ViewExt.show
 import com.maps.distancetracker.utils.moveCameraWithAnim
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog

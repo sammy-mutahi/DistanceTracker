@@ -1,4 +1,4 @@
-package com.maps.distancetracker.ui
+package com.maps.distancetracker.ui.maps
 
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng

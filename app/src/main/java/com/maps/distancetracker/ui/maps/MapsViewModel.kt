@@ -1,4 +1,4 @@
-package com.maps.distancetracker.ui
+package com.maps.distancetracker.ui.maps
 
 import android.location.Location
 import androidx.lifecycle.LiveData

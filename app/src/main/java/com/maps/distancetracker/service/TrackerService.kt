@@ -16,7 +16,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
-import com.maps.distancetracker.ui.MapUtils
+import com.maps.distancetracker.ui.maps.MapUtils
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_START
 import com.maps.distancetracker.utils.Constants.ACTION_SERVICE_STOP
 import com.maps.distancetracker.utils.Constants.LOCATION_FASTEST_UPDATE_INTERVAL

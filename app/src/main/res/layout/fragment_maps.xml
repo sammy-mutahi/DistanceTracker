@@ -7,7 +7,7 @@
 
         <variable
             name="tracking"
-            type="com.maps.distancetracker.ui.MapsFragment" />
+            type="com.maps.distancetracker.ui.maps.MapsFragment" />
 
     </data>
 
@@ -25,7 +25,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:context=".ui.MapsFragment" />
+            tools:context=".ui.maps.MapsFragment" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/start_button"
