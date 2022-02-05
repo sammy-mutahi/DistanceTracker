@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -53,6 +54,10 @@ android {
     }
     dataBinding {
         android.buildFeatures.dataBinding = true
+    }
+    detekt {
+        // other detekt configuration goes here
+        baseline = file("rootDir/detekt-baseline.xml")
     }
 }
 

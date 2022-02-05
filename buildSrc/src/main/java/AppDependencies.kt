@@ -5,6 +5,12 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 * */
 object AppDependencies {
 
+    const val ktlintPlugin = "org.jlleitschuh.gradle.ktlint"
+    const val detektPlugin = "io.gitlab.arturbosch.detekt"
+    const val spotlessPlugin = "com.diffplug.spotless"
+    const val dokkaPlugin = "org.jetbrains.dokka"
+    const val jacocoAndroid = "com.hiya.jacoco-android"
+
     //android ui
     private val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
     private val material = "com.google.android.material:material:${Versions.material}"
