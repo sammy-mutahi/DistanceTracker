@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues />
+  <CurrentIssues>
+    <ID>MagicNumber:MapUtils.kt$MapUtils$1000</ID>
+    <ID>MagicNumber:MapUtils.kt$MapUtils$18f</ID>
+    <ID>MagicNumber:MapUtils.kt$MapUtils$24</ID>
+    <ID>MagicNumber:MapUtils.kt$MapUtils$60</ID>
+    <ID>MagicNumber:MapsFragment.kt$MapsFragment$100</ID>
+    <ID>MagicNumber:MapsFragment.kt$MapsFragment$1000</ID>
+    <ID>MagicNumber:MapsFragment.kt$MapsFragment$10f</ID>
+    <ID>MagicNumber:MapsFragment.kt$MapsFragment$2000</ID>
+    <ID>MagicNumber:MapsFragment.kt$MapsFragment.&lt;no name provided>$1000</ID>
+    <ID>MagicNumber:MapsFragment.kt$MapsFragment.&lt;no name provided>$4000</ID>
+    <ID>NewLineAtEndOfFile:Constants.kt$com.maps.distancetracker.utils.Constants.kt</ID>
+    <ID>
+      NewLineAtEndOfFile:DistanceTrackerApplication.kt$com.maps.distancetracker.DistanceTrackerApplication.kt
+    </ID>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$com.maps.distancetracker.ExampleUnitTest.kt</ID>
+    <ID>NewLineAtEndOfFile:LocationModule.kt$com.maps.distancetracker.di.LocationModule.kt</ID>
+    <ID>
+      NewLineAtEndOfFile:LocationUpdateUtils.kt$com.maps.distancetracker.utils.LocationUpdateUtils.kt
+    </ID>
+    <ID>NewLineAtEndOfFile:MainActivity.kt$com.maps.distancetracker.ui.MainActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:MapExtensions.kt$com.maps.distancetracker.utils.MapExtensions.kt</ID>
+    <ID>NewLineAtEndOfFile:MapStyle.kt$com.maps.distancetracker.utils.MapStyle.kt</ID>
+    <ID>NewLineAtEndOfFile:MapUtils.kt$com.maps.distancetracker.ui.maps.MapUtils.kt</ID>
+    <ID>
+      NewLineAtEndOfFile:MapsBindingAdapter.kt$com.maps.distancetracker.utils.MapsBindingAdapter.kt
+    </ID>
+    <ID>NewLineAtEndOfFile:MapsFragment.kt$com.maps.distancetracker.ui.maps.MapsFragment.kt</ID>
+    <ID>NewLineAtEndOfFile:MapsViewModel.kt$com.maps.distancetracker.ui.maps.MapsViewModel.kt</ID>
+    <ID>NewLineAtEndOfFile:NotificationModule.kt$com.maps.distancetracker.di.NotificationModule.kt
+    </ID>
+    <ID>NewLineAtEndOfFile:Permissions.kt$com.maps.distancetracker.utils.Permissions.kt</ID>
+    <ID>NewLineAtEndOfFile:Result.kt$com.maps.distancetracker.data.Result.kt</ID>
+    <ID>NewLineAtEndOfFile:ResultFragment.kt$com.maps.distancetracker.ui.result.ResultFragment.kt
+    </ID>
+    <ID>NewLineAtEndOfFile:TrackerService.kt$com.maps.distancetracker.service.TrackerService.kt</ID>
+    <ID>NewLineAtEndOfFile:ViewExt.kt$com.maps.distancetracker.utils.ViewExt.kt</ID>
+    <ID>SwallowedException:MapsViewModel.kt$MapsViewModel$catch (e: Exception) { //update view state
+      }
+    </ID>
+    <ID>TooGenericExceptionCaught:MapStyle.kt$MapStyle$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MapsViewModel.kt$MapsViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:MapsFragment.kt$MapsFragment :
+      FragmentPermissionCallbacksOnMapReadyCallback
+    </ID>
+    <ID>UnusedPrivateMember:MapsFragment.kt$MapsFragment$val polyline = map.addPolyline(
+      PolylineOptions().apply { width(10f) color(Color.BLUE) jointType(JointType.ROUND)
+      startCap(ButtCap()) endCap(ButtCap()) addAll(locationList) } )
+    </ID>
+    <ID>UtilityClassWithPublicConstructor:MapsBindingAdapter.kt$MapsBindingAdapter</ID>
+    <ID>WildcardImport:MapsFragment.kt$import com.google.android.gms.maps.model.*</ID>
+  </CurrentIssues>
+</SmellBaseline>
